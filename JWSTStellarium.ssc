@@ -1,0 +1,76 @@
+// This Stellarium script plots positions of JWST and SEMB-L2 in Stellarium using RA/Dec coordinates from Nasa Horizons
+// Narjala Bhasker - January 16, 2022
+
+// JWST positions from Nasa Horizons
+
+var JWST = [
+	{label: "Jan 11", ra: "06 35 14.04", dec: "+01 59 09.1"},
+	{label: "Jan 21", ra: "06 51 15.59", dec: "+04 09 18.7"},
+	{label: "Jan 31", ra: "07 07 38.12", dec: "+06 54 19.5"},
+	{label: "Feb 7",  ra: "07 22 31.41", dec: "+09 17 53.3"}
+];
+
+// SEMB-L2 positions from Nasa Horizons
+
+var SEMB_L2 = [
+	{label: "Jan 11", ra: "07 28 10.12", dec: "+21 42 23.6"},
+	{label: "Jan 21", ra: "08 12 16.03", dec: "+19 48 54.9"},
+	{label: "Jan 31", ra: "08 53 39.32", dec: "+17 18 31.6"},
+	{label: "Feb 10", ra: "09 33 03.26", dec: "+14 23 31.2"}
+];
+
+// Fixup RA strings to have hours, minutes, seconds (hms) format required by Stellarium functions
+
+function fixupRA (ra) {
+	ret = ra.substr(0,2) + "h" + ra.substr(3,2) + "m" + ra.substr(6,5) + "s";
+	return ret
+}
+
+// Fixup Dec strings to have degrees, arcminutes, arcseconds (dms) format required by Stellarium functions
+
+function fixupDec (dec) {
+	ret = dec.substr(0,3) + "d" + dec.substr(4,2) + "m" + dec.substr(7,4) + "s";
+	return ret
+}
+
+// Wrapper function for Stellarium marker and label functions
+
+function drawMarkerWithLabel (label, ra, dec, shape, color, size, font, direction, distance) {
+	ret = MarkerMgr.markerEquatorial(fixupRA(ra), fixupDec(dec), true, true, shape, color, size);  
+	core.debug(ret)
+	ret = LabelMgr.labelEquatorial(label, fixupRA(ra), fixupDec(dec), true, font, color, direction, distance); 
+	core.debug(ret)
+}
+
+// Clear old markers and labels
+
+MarkerMgr.deleteAllMarkers()
+LabelMgr.deleteAllLabels()
+
+// Draw JWST markers and labels
+
+color     = "#ffff00"
+shape     = "gear"
+size      = 12
+font      = 16
+direction = "E"
+distance  = 20
+
+// Note that => function notation doesn't seem to be supported so using traditional function notation
+
+JWST.forEach(function(e){
+	drawMarkerWithLabel("JWST " + e.label, e.ra, e.dec, shape, color, size, font, direction, distance);
+});
+
+// Draw SEMB-L2 markers and labels
+
+color     = "#ffff00"
+shape     = "circled-cross"
+size      = 12
+font      = 16
+direction = "S"
+distance  = 20
+
+SEMB_L2.forEach(function(e){
+	drawMarkerWithLabel("L2 " + e.label, e.ra, e.dec, shape, color, size, font, direction, distance)
+});
