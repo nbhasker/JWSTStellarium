@@ -74,3 +74,6 @@ distance  = 20
 SEMB_L2.forEach(function(e){
 	drawMarkerWithLabel("L2 " + e.label, e.ra, e.dec, shape, color, size, font, direction, distance)
 });
+
+// Slew Stellarium to the first JWST point
+core.moveToRaDecJ2000(fixupRA(JWST[0].ra), fixupDec(JWST[0].dec), 1)
